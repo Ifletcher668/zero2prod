@@ -12,3 +12,6 @@ This repository houses my code as I follow the [zero2production](https://www.zer
 PostgreSQL
 
 sqlx
+
+## CI 
+This is a placeholder to test CI/CD on my first branch
