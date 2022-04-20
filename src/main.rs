@@ -20,5 +20,3 @@ async fn main() -> std::io::Result<()> {
 
   run(listener, connection_pool)?.await
 }
-
-// 4.5.11 Logs for Integration Tests
