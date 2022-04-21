@@ -25,7 +25,7 @@ jobs:
         run: docker tag zero2prod registry.digitalocean.com/zero2prod:latest
 
       - name: Push image to DO Container Registry
-        run: docker push registry.digitalocean.com/caffeinated-gorilla/zero2prod:latest
+        run: docker push registry.digitalocean.com/zero2prod:latest
 
       - name: DigitalOcean App Platform deployment
         uses: digitalocean/app_action@main
