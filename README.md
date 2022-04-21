@@ -28,3 +28,9 @@ To run a prettified log of the runtime environment, run:
 ```
   RUST_LOG=trace cargo run | bunyan
 ```
+
+## Prepare SQLX for offline build mode
+
+`sqlx prepare --help`
+
+` cargo sqlx prepare -- --lib`
