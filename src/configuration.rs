@@ -67,7 +67,7 @@ pub fn get_configuration() -> Result<Settings, config::ConfigError> {
     .expect("Failed to parse APP_ENVIRONMENT");
 
   settings.merge(config::File::from(config_directory.join(env.as_str())).required(true))?;
-  settings.merge(config::Environment::with_prefix("app").separator("__"));
+  settings.merge(config::Environment::with_prefix("app").separator("__"))?;
 
   settings.try_into()
 }
