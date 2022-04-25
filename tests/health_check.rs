@@ -142,7 +142,10 @@ async fn subscribe_returns_400_when_fields_are_present_but_invalid() {
   let client = reqwest::Client::new();
   let test_cases = vec![
     ("name=&email=ursula_le_guin%40gmail.com", "empty name"),
-    ("name=isi{h%%&&email=ursula_le_guin%40gmail.com", "empty name"),
+    (
+      "name=isi{h%%&&email=ursula_le_guin%40gmail.com",
+      "empty name",
+    ),
     ("name=Ursula&email=", "empty email"),
     ("name=Ursula&email=definitely-not-an-email", "invalid email"),
   ];
@@ -156,11 +159,11 @@ async fn subscribe_returns_400_when_fields_are_present_but_invalid() {
       .await
       .expect("Failed to execute request");
 
-      assert_eq!(
-        400,
-        response.status().as_u16(),
-        "The API did not return a 400 OK when the payload was {}.",
-        description
-      )
+    assert_eq!(
+      400,
+      response.status().as_u16(),
+      "The API did not return a 400 OK when the payload was {}.",
+      description
+    )
   }
 }
