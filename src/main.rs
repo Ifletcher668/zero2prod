@@ -18,5 +18,3 @@ async fn main() -> std::io::Result<()> {
 
   run(listener, connection_pool)?.await
 }
-
-// Ch. 6 Reject Invalid Subscribers
