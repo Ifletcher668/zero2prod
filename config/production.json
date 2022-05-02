@@ -4,5 +4,9 @@
   },
   "database": {
     "require_ssl": true
+  },
+  "email_client": {
+    "base_url": "https://api.mailgun.net/v3/sandbox9930c5fd5f1e46d89d78b068a4ab2f4e.mailgun.org",
+    "sender_email": "isiahfletcher7@gmail.com"
   }
 }
