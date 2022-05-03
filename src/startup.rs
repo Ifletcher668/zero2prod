@@ -26,7 +26,7 @@ impl Application {
     let email_client = EmailClient::new(
       config.email_client.base_url,
       sender_email,
-      config.email_client.authorization_token,
+      // config.email_client.authorization_token,
       timeout,
     );
     let address = format!("{}:{}", config.application.host, config.application.port);

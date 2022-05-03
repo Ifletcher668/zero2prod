@@ -1,5 +1,5 @@
 use reqwest::Client;
-use secrecy::Secret;
+// use secrecy::Secret;
 
 use crate::domain::SubscriberEmail;
 
@@ -7,7 +7,8 @@ pub struct EmailClient {
   sender: SubscriberEmail,
   http_client: Client,
   base_url: String,
-  authorization_token: Secret<String>,
+  // Do I need this with mailgun?
+  // authorization_token: Secret<String>,
 }
 
 #[derive(serde::Serialize)]
@@ -25,7 +26,7 @@ impl EmailClient {
   pub fn new(
     base_url: String,
     sender: SubscriberEmail,
-    authorization_token: Secret<String>,
+    // authorization_token: Secret<String>,
     timeout: std::time::Duration,
   ) -> Self {
     let http_client = Client::builder().timeout(timeout).build().unwrap();
@@ -34,7 +35,7 @@ impl EmailClient {
       http_client,
       base_url,
       sender,
-      authorization_token,
+      // authorization_token,
     }
   }
 
@@ -71,8 +72,7 @@ mod tests {
   use crate::domain::SubscriberEmail;
   use claim::{assert_err, assert_ok};
   use fake::faker::lorem::en::{Paragraph, Sentence};
-  use fake::{faker::internet::en::SafeEmail, Fake, Faker};
-  use secrecy::Secret;
+  use fake::{faker::internet::en::SafeEmail, Fake};
   use wiremock::matchers::{any, header, method, path};
   use wiremock::{Mock, MockServer, Request, ResponseTemplate};
 
@@ -111,7 +111,7 @@ mod tests {
     EmailClient::new(
       base_url,
       email(),
-      Secret::new(Faker.fake()),
+      // Secret::new(Faker.fake()),
       std::time::Duration::from_millis(200),
     )
   }
