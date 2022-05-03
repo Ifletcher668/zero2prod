@@ -13,6 +13,23 @@ PostgreSQL
 
 sqlx
 
+### Prepare SQLX for offline build mode
+
+```
+sqlx prepare --help
+```
+
+```
+cargo sqlx prepare -- --lib
+```
+
+
+### Migrate the Production Database
+```
+DATABASE_URL=<DATABASE_CONNECTION_STRING> sqlx migrate run
+```
+
+
 ## CI 
 This is a placeholder to test CI/CD on my first branch
 
@@ -28,9 +45,3 @@ To run a prettified log of the runtime environment, run:
 ```
   RUST_LOG=trace cargo run | bunyan
 ```
-
-## Prepare SQLX for offline build mode
-
-`sqlx prepare --help`
-
-` cargo sqlx prepare -- --lib`
