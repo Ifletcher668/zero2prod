@@ -17,7 +17,6 @@ pub struct Application {
 impl Application {
   pub async fn build(config: Settings) -> Result<Self, std::io::Error> {
     let connection_pool = get_connection_pool(&config.database);
-
     let sender_email = config
       .email_client
       .sender()
@@ -26,7 +25,7 @@ impl Application {
     let email_client = EmailClient::new(
       config.email_client.base_url,
       sender_email,
-      // config.email_client.authorization_token,
+      config.email_client.mailgun_api_key,
       timeout,
     );
 

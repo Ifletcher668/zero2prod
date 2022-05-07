@@ -1,5 +1,5 @@
 use reqwest::Client;
-// use secrecy::Secret;
+use secrecy::{Secret, ExposeSecret};
 
 use crate::domain::SubscriberEmail;
 
@@ -7,8 +7,7 @@ pub struct EmailClient {
   sender: SubscriberEmail,
   http_client: Client,
   base_url: String,
-  // Do I need this with mailgun?
-  // authorization_token: Secret<String>,
+  mailgun_api_key: Secret<String>,
 }
 
 #[derive(serde::Serialize)]
@@ -26,7 +25,7 @@ impl EmailClient {
   pub fn new(
     base_url: String,
     sender: SubscriberEmail,
-    // authorization_token: Secret<String>,
+    mailgun_api_key: Secret<String>,
     timeout: std::time::Duration,
   ) -> Self {
     let http_client = Client::builder().timeout(timeout).build().unwrap();
@@ -35,7 +34,7 @@ impl EmailClient {
       http_client,
       base_url,
       sender,
-      // authorization_token,
+      mailgun_api_key,
     }
   }
 
@@ -58,22 +57,25 @@ impl EmailClient {
     self
       .http_client
       .post(&url)
+      .basic_auth("api", Some(self.mailgun_api_key.expose_secret()))
       .json(&request_body)
       .send()
       .await?
       .error_for_status()?;
+
     Ok(())
   }
 }
 
 #[cfg(test)]
 mod tests {
-  use super::EmailClient;
+  use super::{EmailClient, EMAIL_ENDPOINT};
   use crate::domain::SubscriberEmail;
   use claim::{assert_err, assert_ok};
   use fake::faker::lorem::en::{Paragraph, Sentence};
-  use fake::{faker::internet::en::SafeEmail, Fake};
-  use wiremock::matchers::{any, header, method, path};
+  use fake::{faker::internet::en::SafeEmail, Fake, Faker};
+  use secrecy::Secret;
+use wiremock::matchers::{any, header, method, path};
   use wiremock::{Mock, MockServer, Request, ResponseTemplate};
 
   struct SendEmailBodyMatcher;
@@ -111,7 +113,7 @@ mod tests {
     EmailClient::new(
       base_url,
       email(),
-      // Secret::new(Faker.fake()),
+      Secret::new(Faker.fake()),
       std::time::Duration::from_millis(200),
     )
   }
@@ -122,7 +124,7 @@ mod tests {
     let email_client = email_client(mock_server.uri());
 
     Mock::given(header("Content-Type", "application/json"))
-      .and(path("/messages"))
+      .and(path(format!("/{}", EMAIL_ENDPOINT)))
       .and(method("POST"))
       .and(SendEmailBodyMatcher)
       .respond_with(ResponseTemplate::new(200))

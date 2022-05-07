@@ -1,42 +1,46 @@
-name: zero2prod
-region: sfo3
-services:
-  - name: zero2prod
-    dockerfile_path: Dockerfile
-    source_dir: .
-    github:
-      branch: main
-      deploy_on_push: true
-      repo: Ifletcher668/zero2prod
-    health_check:
-      http_path: /health_check
-    http_port: 8000
-    instance_count: 1
-    instance_size_slug: basic-xxs
-    routes:
-      - path: /
-    envs:
-      - key: APP_DATABASE__USERNAME
-        scope: RUN_TIME
-        value: ${newsletter.USERNAME}
-      - key: APP_DATABASE__PASSWORD
-        scope: RUN_TIME
-        value: ${newsletter.PASSWORD}
-      - key: APP_DATABASE__HOST
-        scope: RUN_TIME
-        value: ${newsletter.HOSTNAME}
-      - key: APP_DATABASE__PORT
-        scope: RUN_TIME
-        value: ${newsletter.PORT}
-      - key: APP_DATABASE__DATABASE_NAME
-        scope: RUN_TIME
-        value: ${newsletter.DATABASE}
-      - key: APP_APPLICATION__BASE_URL
-        scope: RUN_TIME
-        value: ${APP_URL}
 databases:
-  - engine: PG
-    name: newsletter
-    num_nodes: 1
-    size: db-s-dev-database
-    version: "12"
+- engine: PG
+  name: newsletter
+  num_nodes: 1
+  size: db-s-dev-database
+  version: "12"
+name: zero2prod
+region: sfo
+services:
+- dockerfile_path: Dockerfile
+  envs:
+  - key: APP_DATABASE__USERNAME
+    scope: RUN_TIME
+    value: ${newsletter.USERNAME}
+  - key: APP_DATABASE__PASSWORD
+    scope: RUN_TIME
+    value: ${newsletter.PASSWORD}
+  - key: APP_DATABASE__HOST
+    scope: RUN_TIME
+    value: ${newsletter.HOSTNAME}
+  - key: APP_DATABASE__PORT
+    scope: RUN_TIME
+    value: ${newsletter.PORT}
+  - key: APP_DATABASE__DATABASE_NAME
+    scope: RUN_TIME
+    value: ${newsletter.DATABASE}
+  - key: APP_APPLICATION__BASE_URL
+    scope: RUN_TIME
+    value: ${APP_URL}
+  - key: APP_EMAIL_CLIENT__MAILGUN_API_KEY
+    scope: RUN_TIME
+    type: SECRET
+    value: EV[1:LDvcdFUf1noJ0FxMH1oP0n03+E0EfdM1:AY/BQ1P9cD1/hQU4hsZ0dbfAUlnCs3M2/OC3NUI7beat/p82Det8/yQvQapT+9QP4MtRZTqfCvdJzvtBtpa5HiHR]
+  github:
+    branch: main
+    deploy_on_push: true
+    repo: Ifletcher668/zero2prod
+  health_check:
+    http_path: /health_check
+  http_port: 8000
+  instance_count: 1
+  instance_size_slug: basic-xxs
+  name: zero2prod
+  routes:
+  - path: /
+  source_dir: .
