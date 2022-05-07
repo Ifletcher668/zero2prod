@@ -4,10 +4,12 @@
     "port": 5432,
     "username": "postgres",
     "password": "password",
-    "database_name": "newsletter"
+    "database_name": "newsletter",
+    "require_ssl": false
   },
   "application": {
-    "port": 8000
+    "port": 8000,
+    "host": "0.0.0.0"
   },
   "email_client": {
     "base_url": "localhost",

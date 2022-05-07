@@ -20,7 +20,7 @@ struct SendEmailRequest<'a> {
   text: &'a str,
 }
 
-const MESSAGES_ENDPOINT: &str = "messages";
+pub const EMAIL_ENDPOINT: &str = "messages";
 
 impl EmailClient {
   pub fn new(
@@ -46,7 +46,7 @@ impl EmailClient {
     html: &str,
     text: &str,
   ) -> Result<(), reqwest::Error> {
-    let url = format!("{}/{}", self.base_url, MESSAGES_ENDPOINT);
+    let url = format!("{}/{}", self.base_url, EMAIL_ENDPOINT);
     let request_body = SendEmailRequest {
       from: self.sender.as_ref(),
       to: recipient.as_ref(),
