@@ -1,5 +1,5 @@
 use reqwest::Client;
-use secrecy::{Secret, ExposeSecret};
+use secrecy::{ExposeSecret, Secret};
 
 use crate::domain::SubscriberEmail;
 
@@ -75,7 +75,7 @@ mod tests {
   use fake::faker::lorem::en::{Paragraph, Sentence};
   use fake::{faker::internet::en::SafeEmail, Fake, Faker};
   use secrecy::Secret;
-use wiremock::matchers::{any, header, method, path};
+  use wiremock::matchers::{any, header, method, path};
   use wiremock::{Mock, MockServer, Request, ResponseTemplate};
 
   struct SendEmailBodyMatcher;
