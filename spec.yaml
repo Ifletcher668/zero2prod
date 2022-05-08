@@ -28,9 +28,9 @@ services:
     scope: RUN_TIME
     value: ${APP_URL}
   - key: APP_EMAIL_CLIENT__MAILGUN_API_KEY
-    scope: RUN_TIME
+    scope: RUN_AND_BUILD_TIME
     type: SECRET
-    value: EV[1:LDvcdFUf1noJ0FxMH1oP0n03+E0EfdM1:AY/BQ1P9cD1/hQU4hsZ0dbfAUlnCs3M2/OC3NUI7beat/p82Det8/yQvQapT+9QP4MtRZTqfCvdJzvtBtpa5HiHR]
+    value: EV[1:0GcZ6L3daGlu86AvPhtxY9ts1ha4DAHZ:M8L+hUZxJZmrvvyTcjeg37GcXy4rGy2E17PrjI8RzSakKl3TD21qzkNehQ/Bv+PmupUfRTMhGNq9VlHNJjwanR4k]
   github:
     branch: main
     deploy_on_push: true
