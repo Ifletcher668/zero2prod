@@ -58,3 +58,5 @@ pub async fn get_subscriber_id_from_token(
 
   Ok(result.map(|r| r.subscriber_id))
 }
+
+// refactor 'confirm' with proper error handling
