@@ -1,8 +1,9 @@
 use crate::configuration::{DatabaseSettings, Settings};
 use crate::email_client::EmailClient;
-use crate::routes::{confirm, health_check, subscribe};
+use crate::routes;
+
 use actix_web::dev::Server;
-use actix_web::web::{get, post, Data};
+use actix_web::web::{self, Data};
 use actix_web::{App, HttpServer};
 use sqlx::postgres::PgPoolOptions;
 use sqlx::PgPool;
@@ -75,9 +76,9 @@ fn run(
   let server = HttpServer::new(move || {
     App::new()
       .wrap(TracingLogger::default())
-      .route("/health_check", get().to(health_check))
-      .route("/subscriptions", post().to(subscribe))
-      .route("/subscriptions/confirm", get().to(confirm))
+      .route("/health_check", web::get().to(routes::health_check))
+      .route("/subscriptions", web::post().to(routes::subscribe))
+      .route("/subscriptions/confirm", web::get().to(routes::confirm))
       .app_data(db_pool.clone())
       .app_data(email_client.clone())
       .app_data(base_url.clone())

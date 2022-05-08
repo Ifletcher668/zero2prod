@@ -1,6 +1,10 @@
-use actix_web::{web, HttpResponse};
+use actix_web::{web, HttpResponse, ResponseError};
+use anyhow::Context;
+use reqwest::StatusCode;
 use sqlx::PgPool;
 use uuid::Uuid;
+
+use crate::helpers;
 
 #[derive(serde::Deserialize)]
 pub struct Parameters {
@@ -8,19 +12,41 @@ pub struct Parameters {
 }
 
 #[tracing::instrument(name = "Confirm a pending subscriber", skip(parameters, pool))]
-pub async fn confirm(parameters: web::Query<Parameters>, pool: web::Data<PgPool>) -> HttpResponse {
-  let id = match get_subscriber_id_from_token(&pool, &parameters.subscription_token).await {
-    Ok(id) => id,
-    Err(_) => return HttpResponse::InternalServerError().finish(),
-  };
-  match id {
-    // non-existing token
-    None => HttpResponse::Unauthorized().finish(),
-    Some(subscriber_id) => {
-      if confirm_subscriber(&pool, subscriber_id).await.is_err() {
-        return HttpResponse::InternalServerError().finish();
-      }
-      HttpResponse::Ok().finish()
+pub async fn confirm(
+  parameters: web::Query<Parameters>,
+  pool: web::Data<PgPool>,
+) -> Result<HttpResponse, ConfirmSubscriptionError> {
+  let subscriber_id = get_subscriber_id_from_token(&pool, &parameters.subscription_token)
+    .await
+    .context("Failed to get id from subscription token")?
+    .ok_or(ConfirmSubscriptionError::UnknownToken)?;
+
+  confirm_subscriber(&pool, subscriber_id)
+    .await
+    .context("Failed to confirm the subscriber status.")?;
+
+  Ok(HttpResponse::Ok().finish())
+}
+
+#[derive(thiserror::Error)]
+pub enum ConfirmSubscriptionError {
+  #[error(transparent)]
+  UnexpectedError(#[from] anyhow::Error),
+  #[error("No subscriber associated with the given token")]
+  UnknownToken,
+}
+
+impl std::fmt::Debug for ConfirmSubscriptionError {
+  fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    helpers::error_chain_fmt(self, f)
+  }
+}
+
+impl ResponseError for ConfirmSubscriptionError {
+  fn status_code(&self) -> StatusCode {
+    match self {
+      Self::UnexpectedError(_) => StatusCode::INTERNAL_SERVER_ERROR,
+      Self::UnknownToken => StatusCode::UNAUTHORIZED,
     }
   }
 }
@@ -58,5 +84,3 @@ pub async fn get_subscriber_id_from_token(
 
   Ok(result.map(|r| r.subscriber_id))
 }
-
-// refactor 'confirm' with proper error handling
